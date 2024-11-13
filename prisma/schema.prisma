@@ -53,7 +53,9 @@ model Likes {
     userId String
     user User @relation(fields: [userId], references: [userId])
 
+    @@unique([postId, userId])
 }
+
 
 
 

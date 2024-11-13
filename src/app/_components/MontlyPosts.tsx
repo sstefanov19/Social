@@ -1,9 +1,11 @@
-
 "use client";
-import React from "react";
-import { useMutation, useQuery, QueryClient } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import LikeButton from "./LikeButton";
+import { CiHeart } from "react-icons/ci";
+import { IoMdHeart } from "react-icons/io";
+
+
+
 
 interface Post {
   id: string;
@@ -16,108 +18,107 @@ interface Post {
   };
 }
 
-const queryClient = new QueryClient();
-
 export default function MontlyPosts() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // Fetch posts initially
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch("/api/posts");
+        if (!response.ok) throw new Error("Failed to fetch posts");
+        const data = (await response.json()) as Post[];
+        setPosts(data);
+      } catch (err) {
+        setError(err.message as Error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+     void fetchPosts();
+  }, []);
 
-    const likePost = async (postId: string) => {
-        const response = await fetch('/api/like', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ postId }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to like post');
-        }
-
-        return response.json() as Promise<{ success: boolean }>;
-      };
-
-      const mutation = useMutation(likePost, {
-        onSuccess: () => {
-          queryClient.invalidateQueries('posts');
+  const handleLike = async (postId: string) => {
+    try {
+      const response = await fetch("/api/likes", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({ postId }),
       });
 
-      const handleLike = (postId: string) => {
-        mutation.mutate(postId);
-      };
+      if (!response.ok) throw new Error("Failed to like post");
+
+      const result = (await response.json()) as { message: string };
 
 
-  const fetchPosts = async (): Promise<Post[]> => {
-    const response = await fetch("http://localhost:3000/api/posts", {
-      method: "GET",
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId
+            ? { ...post, likes: result.message.includes("liked") ? post.likes + 1 : post.likes - 1 }
+            : post
+        )
+      );
+
+    setLikedPosts((prevLikedPosts) => {
+      const updatedLikedPosts = new Set(prevLikedPosts);
+      if (result.message.includes("liked")) {
+        updatedLikedPosts.add(postId);
+      } else {
+        updatedLikedPosts.delete(postId);
+      }
+      return updatedLikedPosts;
     });
-
-    if (!response.ok) {
-      throw new Error("Posts not found");
+    } catch (err) {
+      console.error(err);
     }
-
-    return response.json() as Promise<Post[]>;
   };
 
-  const {
-    data: posts,
-    isLoading,
-    error,
-  } = useQuery<Post[]>({
-    queryKey: ["posts"],
-    queryFn: fetchPosts,
-  });
-
-
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <section className="mt-8 flex flex-col items-center justify-center">
       <h1 className="mb-6 text-3xl font-semibold text-slate-200">
         Explore our top Monthly posts
       </h1>
-      <div className="h-[800px] w-2/4 overflow-y-auto rounded-md bg-[#393E46]">
-        {Array.isArray(posts) && posts.length > 0 ? (
+      <div className="w-2/4 ">
+        {posts.length > 0 ? (
           <ul className="flex flex-col items-center justify-center p-4 text-white">
             {posts.map((post) => (
               <li
-                className="mb-6 flex h-[350px] w-[500px] flex-col rounded-md border-2"
+                className="mb-6 flex flex-col w-[500px] rounded-md border-2 p-4"
                 key={post.id}
               >
-                {post.user && <p>Author: {post.user.name}</p>}
                 {post.ImageUrl && (
                   <Image
                     src={post.ImageUrl}
                     alt={post.title}
                     width={500}
                     height={150}
-                    className="h-[150px] w-full"
+                    className="h-[150px] rounded-sm w-full"
                   />
                 )}
-
                 <div className="my-4 flex gap-4">
-                 <LikeButton handleLike={() => handleLike} postId={post.id} />
-                  <button>Comment</button>
+                  {/* Like button */}
+                  <button
+                    onClick={() => handleLike(post.id)}>
+                    {likedPosts.has(post.id) ? <IoMdHeart size={24} color="red" /> : <CiHeart size={24} />}
+                  </button>
                 </div>
-                  <p>Likes: {post.likes}</p>
+                <p>Likes: {post.likes}</p>
                 <h2>{post.title}</h2>
                 <p>{post.description}</p>
               </li>
             ))}
           </ul>
         ) : (
-          <div>
-            <h1 className="text-bold text-2xl text-center text-white">No posts available</h1>
-          </div>
+          <div className="text-center text-white">No posts available</div>
         )}
       </div>
     </section>

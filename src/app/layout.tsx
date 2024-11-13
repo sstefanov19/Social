@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import {ClerkProvider} from '@clerk/nextjs';
 import Header from "./_components/Header";
+import { Toaster } from "~/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -19,7 +20,9 @@ export default function RootLayout({
     <html lang="en" className={`${GeistSans.variable}`}>
       <body className="h-screen w-screen bg-[#1B262C] font-itim">
         <Header />
-        {children}</body>
+        {children}
+        <Toaster />
+        </body>
     </html>
     </ClerkProvider>
   );

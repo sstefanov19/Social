@@ -17,6 +17,7 @@ import { Textarea } from '~/components/ui/textarea';
 import { useUser } from '@clerk/nextjs';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '~/hooks/use-toast';
 
 const formSchema = z.object({
   title: z.string().nonempty("Title is required"),
@@ -25,6 +26,7 @@ const formSchema = z.object({
 });
 
 export default function PostForm() {
+    const {toast} = useToast();
     const router = useRouter();
   const { user } = useUser();
   const [file, setFile] = useState<File | null>(null);
@@ -58,6 +60,10 @@ export default function PostForm() {
       throw new Error("Failed to create post");
     }
 
+
+    toast({
+      title: 'Post created successfully',
+    });
     router.push('/');
 
     console.log('Post created successfully');

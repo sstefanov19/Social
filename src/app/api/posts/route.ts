@@ -78,6 +78,7 @@ export async function GET() {
       orderBy: {
         likes: 'desc'
       },
+      take: 5
     });
 
     return NextResponse.json(posts, { status: 200 });
