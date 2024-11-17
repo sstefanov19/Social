@@ -9,13 +9,6 @@ export async function GET() {
                 likes: 'desc',
             },
             take: 5,
-            include :{
-                user: {
-                    select: {
-                        name : true
-                    }
-                }
-            }
         });
 
         return NextResponse.json(posts);
