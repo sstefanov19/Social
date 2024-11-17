@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
         ImageUrl: imageUrl,
         likes: 0,
         userId: userId,
-      } as PostsCreateInput,
+      },
     });
 
     console.log(post);
