@@ -6,7 +6,7 @@ export async function GET() {
 
         const posts = await db.posts.findMany({
             orderBy: {
-                likes: 'desc'
+                likes: 'desc',
             },
             take: 5,
             include :{
@@ -17,8 +17,6 @@ export async function GET() {
                 }
             }
         });
-
-        console.log("Posts", posts);
 
         return NextResponse.json(posts);
 

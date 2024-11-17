@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 
 
         await db.user.upsert({
-          where: { email },
+          where: { userId },
           update: {},
           create: {
             userId,
@@ -35,4 +35,35 @@ export async function POST(req: NextRequest) {
         console.log("Failed to add user to database", error as Error);
         return NextResponse.json({ message: 'Failed to add user to database' }, { status: 500 });
       }
+}
+
+
+export async function GET(req : NextRequest) {
+
+    const userId = req.nextUrl.searchParams.get('userId');
+
+
+    try {
+        if(!userId) {
+            return NextResponse.json({ message: 'Invalid user ID' }, { status: 400 });
+
+        }
+       const user =  await db.user.findUnique({
+              where: {
+                userId: userId
+              }
+       })
+
+       if(!user) {
+        return NextResponse.json({ message: 'User not found' }, { status: 404 });
+       }
+
+       return NextResponse.json(user);
+
+
+    } catch (error) {
+        console.log("Failed to fetch user", error as Error);
+        return NextResponse.json({ message: 'Failed to fetch user' }, { status: 500 });
+    }
+
 }

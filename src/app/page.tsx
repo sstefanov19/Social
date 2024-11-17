@@ -3,6 +3,7 @@ import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import Introduction from "~/app/_components/Introduction";
 import MontlyPosts from "~/app/_components/MontlyPosts";
 import ExplorePosts from './_components/ExplorePosts';
+import Footer from './_components/Footer';
 
 const client = new QueryClient();
 export default function HomePage() {
@@ -13,6 +14,7 @@ export default function HomePage() {
     <Introduction/>
     <MontlyPosts />
     <ExplorePosts />
+   <Footer />
    </div>
     </QueryClientProvider>
   );

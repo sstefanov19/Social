@@ -30,6 +30,7 @@ export default function PostForm() {
     const router = useRouter();
   const { user } = useUser();
   const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -41,36 +42,45 @@ export default function PostForm() {
   });
 
   const handleFormSubmit = async (data: { title: string; description: string; imageUrl?: File | null }) => {
+    setLoading(true);
+
     const formData = new FormData();
     formData.append('title', data.title);
     formData.append('description', data.description);
-    if (file) {
-      formData.append('imageUrl', file);
+    if (data.imageUrl) {
+      formData.append('imageUrl', data.imageUrl);
     }
     if (user?.id) {
       formData.append('user', user.id);
     }
 
-    const response = await fetch('/api/posts', {
-      method: 'POST',
-      body: formData,
-    });
+    try {
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        body: formData,
+      });
 
-    if (!response.ok) {
-      throw new Error("Failed to create post");
+      if (!response.ok) {
+        throw new Error("Failed to create post");
+      }
+
+      toast({
+        title: 'Post created successfully',
+      });
+      router.push('/');
+      console.log('Post created successfully');
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: 'Failed to create post',
+      });
+    } finally {
+      setLoading(false);
     }
-
-
-    toast({
-      title: 'Post created successfully',
-    });
-    router.push('/');
-
-    console.log('Post created successfully');
   };
 
   return (
-    <div className='flex justify-center items-center h-3/4 w-screen'>
+    <div className='flex justify-center mt-28 items-center h-3/4 w-screen'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-8 text-slate-200">
           <FormField
@@ -113,7 +123,8 @@ export default function PostForm() {
             </FormControl>
             <FormMessage />
           </FormItem>
-          <Button type="submit">Submit</Button>
+
+          <Button type="submit">{loading ? "Loading" : "Submit"}</Button>
         </form>
       </Form>
     </div>

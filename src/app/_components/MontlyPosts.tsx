@@ -1,8 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import { CiHeart } from "react-icons/ci";
-import { IoMdHeart } from "react-icons/io";
+
+import PostItem from "./PostItem";
 
 
 
@@ -28,12 +27,12 @@ export default function MontlyPosts() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch("/api/posts");
+        const response = await fetch("/api/montlyPosts");
         if (!response.ok) throw new Error("Failed to fetch posts");
         const data = (await response.json()) as Post[];
         setPosts(data);
       } catch (err) {
-        setError(err.message as Error);
+        setError((err as Error).message);
       } finally {
         setLoading(false);
       }
@@ -79,42 +78,25 @@ export default function MontlyPosts() {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div className="text-center h-[1000px] text-xl font-bold text-zinc-200">Loading...</div>;
+  if (error) return <div className="text-center h-[1000px] text-xl font-bold text-zinc-200" >Error: {error}</div>;
 
   return (
-    <section className="mt-8 flex flex-col items-center justify-center">
-      <h1 className="mb-6 text-3xl font-semibold text-slate-200">
+    <section className="flex flex-col items-center justify-center">
+      <h1 className="mb-6 text-2xl font-semibold text-slate-200">
         Explore our top Monthly posts
       </h1>
       <div className="w-2/4 ">
         {posts.length > 0 ? (
           <ul className="flex flex-col items-center justify-center p-4 text-white">
             {posts.map((post) => (
-              <li
-                className="mb-6 flex flex-col w-[500px] rounded-md border-2 p-4"
-                key={post.id}
-              >
-                {post.ImageUrl && (
-                  <Image
-                    src={post.ImageUrl}
-                    alt={post.title}
-                    width={500}
-                    height={150}
-                    className="h-[150px] rounded-sm w-full"
-                  />
-                )}
-                <div className="my-4 flex gap-4">
-                  {/* Like button */}
-                  <button
-                    onClick={() => handleLike(post.id)}>
-                    {likedPosts.has(post.id) ? <IoMdHeart size={24} color="red" /> : <CiHeart size={24} />}
-                  </button>
-                </div>
-                <p>Likes: {post.likes}</p>
-                <h2>{post.title}</h2>
-                <p>{post.description}</p>
-              </li>
+                <PostItem
+                    key={post.id}
+                    post={post}
+                    handleLike={handleLike}
+                    likedPosts={likedPosts}
+
+                    />
             ))}
           </ul>
         ) : (

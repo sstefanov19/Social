@@ -5,6 +5,7 @@ import { type Metadata } from "next";
 import {ClerkProvider} from '@clerk/nextjs';
 import Header from "./_components/Header";
 import { Toaster } from "~/components/ui/toaster";
+import Footer from "./_components/Footer";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -18,9 +19,11 @@ export default function RootLayout({
   return (
     <ClerkProvider>
     <html lang="en" className={`${GeistSans.variable}`}>
-      <body className="h-screen w-screen bg-[#1B262C] font-itim">
+      <body className="flex flex-col min-h-screen w-screen bg-[#1B262C] font-itim">
         <Header />
+        <div className="flex-grow">
         {children}
+        </div>
         <Toaster />
         </body>
     </html>
