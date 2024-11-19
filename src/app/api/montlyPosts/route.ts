@@ -4,12 +4,20 @@ import { db } from "~/server/db";
 export async function GET() {
     try {
 
-        const posts = await db.posts.findMany({
+        const posts = await db.post.findMany({
             orderBy: {
                 likes: 'desc',
             },
             take: 5,
+            include: {
+                user: {
+                    select: {
+                        name: true,
+                    }
+                }
+            }
         });
+
 
         return NextResponse.json(posts);
 

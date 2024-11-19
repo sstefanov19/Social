@@ -1,15 +1,26 @@
 "use client";
-import { UserButton, useUser } from "@clerk/nextjs";
+import { UserButton } from "@clerk/nextjs";
+import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 type User = {
-  id: string;
   name: string;
+  userId : string;
 };
 
+interface Post {
+    id: string;
+    title: string;
+    description: string;
+    likes: number;
+    ImageUrl: string;
+  }
+
 export default function Profile() {
-  const { user } = useUser();
+  const searchParams = useSearchParams();
+  const userId = searchParams.get("userId");
   const [profile, setProfile] = useState<User | undefined>(undefined);
+  const [userPosts , setUserPosts] = useState<Post[] >([]);
 
 
   const fetchUserProfile = async (userId: string) => {
@@ -22,16 +33,31 @@ export default function Profile() {
       if(!response.ok) throw new Error("Failed to fetch user profile");
 
       const data = (await response.json()) as User;
+      console.log(data);
       setProfile(data);
     setProfile(data);
   };
 
+  const fetchUserPosts = async (userId: string) => {
+    const response = await fetch(`/api/posts?userId=${userId}`, {
+      method: "GET",
+    });
+
+    if (!response.ok) throw new Error("Failed to fetch user posts");
+
+    const data = (await response.json()) as Post[];
+    setUserPosts(data);
+  };
+
+
+
   useEffect(() => {
-    if (user?.id) {
-        console.log(user.id);
-      void fetchUserProfile(user.id);
+    if (userId) {
+
+      void fetchUserProfile(userId);
+        void fetchUserPosts(userId);
     }
-  }, [user]);
+  }, [userId]);
 
   return (
     <section className="mt-12 flex h-screen w-full justify-center">
@@ -56,6 +82,17 @@ export default function Profile() {
               </>
             )}
           </div>
+          <div></div>
+          {userPosts.length > 0 && (
+            <ul>
+                {userPosts.map((post) => (
+                    <li key={post.id}>
+                    <h2>{post.title}</h2>
+                    <p>{post.description}</p>
+                    </li>
+                ))}
+            </ul>
+          )}
         </div>
       </div>
     </section>

@@ -4,6 +4,7 @@ import { db } from '~/server/db';
 interface User {
     userId: string;
     name: string;
+    id: string;
     email: string;
 
 }
@@ -14,15 +15,17 @@ export async function POST(req: NextRequest) {
 
         const body = await req.json() as User;
 
+        console.log("User body: ", body);
 
 
-        const { userId, name, email  } = body;
+        const {id , userId, name, email  } = body;
 
 
         await db.user.upsert({
           where: { userId },
           update: {},
           create: {
+            id,
             userId,
             name,
             email,

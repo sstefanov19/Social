@@ -20,113 +20,110 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '~/hooks/use-toast';
 
 const formSchema = z.object({
-  title: z.string().nonempty("Title is required"),
-  description: z.string().nonempty("Description is required"),
-  imageUrl: z.any().optional(), // Make the image field optional
-});
+    title: z.string().nonempty("Title is required"),
+    description: z.string().nonempty("Description is required"),
+    imageUrl: z.any().optional(),
+      });
 
-export default function PostForm() {
-    const {toast} = useToast();
+  export default function PostForm() {
+    const { toast } = useToast();
     const router = useRouter();
-  const { user } = useUser();
-  const [file, setFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
+    const { user } = useUser();
+    const [file , setFile] = useState<File | null>(null);
+    const [loading, setLoading] = useState(false);
 
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: '',
-      description: '',
-      imageUrl: null,
-    },
-  });
+    const form = useForm({
+      resolver: zodResolver(formSchema),
+      defaultValues: {
+        title: '',
+        description: '',
+        imageUrl: null,
+      },
+    });
 
-  const handleFormSubmit = async (data: { title: string; description: string; imageUrl?: File | null }) => {
-    setLoading(true);
-
-    const formData = new FormData();
-    formData.append('title', data.title);
-    formData.append('description', data.description);
-    if (data.imageUrl) {
-      formData.append('imageUrl', data.imageUrl);
-    }
-    if (user?.id) {
-      formData.append('user', user.id);
-    }
-
-    try {
+    const handleFormSubmit = async (data: { title: string; description: string; imageUrl?: File | null }) => {
+      setLoading(true);
+        try{
+      const formData = new FormData();
+      formData.append('title', data.title);
+      formData.append('description', data.description);
+      if (file) {
+        formData.append('imageUrl', file);
+      }
+      if (user?.id) {
+        formData.append('user', user.id);
+      }
       const response = await fetch('/api/posts', {
         method: 'POST',
         body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to create post");
+        if (!response.ok) {
+          throw new Error("Failed to create post");
+        }
+
+        toast({
+          title: 'Post created successfully',
+        });
+        router.push('/');
+        console.log('Post created successfully');
+      } catch (error) {
+        console.error(error);
+        toast({
+          title: 'Failed to create post',
+        });
+      } finally {
+        setLoading(false);
       }
+    };
 
-      toast({
-        title: 'Post created successfully',
-      });
-      router.push('/');
-      console.log('Post created successfully');
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: 'Failed to create post',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className='flex justify-center mt-28 items-center h-3/4 w-screen'>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-8 text-slate-200">
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className='font-bold text-xl'>Title</FormLabel>
-                <FormControl>
-                  <Input className='text-slate-200' placeholder="Enter Title" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className='font-bold text-xl'>Description</FormLabel>
-                <FormControl>
-                  <Textarea className='text-slate-200 h-[200px]' placeholder="Enter Description" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormItem>
-            <FormLabel className='font-bold text-xl'>Image</FormLabel>
-            <FormControl>
-              <input
-                className='text-slate-200'
-                type='file'
-                onChange={(e) => {
-                  const file = e.target.files?.[0] ?? null;
-                  setFile(file);
-                }}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-
-          <Button type="submit">{loading ? "Loading" : "Submit"}</Button>
-        </form>
-      </Form>
-    </div>
-  );
-}
+    return (
+            <div className='flex justify-center items-center mt-32 h-3/4 w-screen'>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-8 text-slate-200">
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='font-bold text-xl'>Title</FormLabel>
+                        <FormControl>
+                          <Input className='text-slate-200' placeholder="Enter Title" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className='font-bold text-xl'>Description</FormLabel>
+                        <FormControl>
+                          <Textarea className='text-slate-200 h-[200px]' placeholder="Enter Description" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormItem>
+                    <FormLabel className='font-bold text-xl'>Image</FormLabel>
+                    <FormControl>
+                      <input
+                        className='text-slate-200'
+                        type='file'
+                        onChange={(e) => {
+                          const file = e.target.files?.[0] ?? null;
+                          setFile(file);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                  <Button type="submit">Submit</Button>
+                </form>
+              </Form>
+            </div>
+          );
+        }

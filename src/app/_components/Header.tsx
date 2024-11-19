@@ -7,43 +7,45 @@ export default function Header() {
   const { isSignedIn, user } = useUser();
   const [userAdded, setUserAdded] = useState(false);
 
-
   async function addUser() {
-    if (isSignedIn && user && userAdded) {
-        try {
-          const checkResponse = await fetch(`/api/users?userId=${user.id}`, {
-            method: "GET",
+    if (isSignedIn && user && !userAdded) {
+      try {
+        // Check if the user already exists in the database
+        const checkResponse = await fetch(`/api/users?userId=${user.id}`, {
+          method: "GET",
+        });
+
+        if (checkResponse.status === 404) {
+          // User does not exist, add to database
+          const response = await fetch("/api/addUser", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: user.id,
+              userId: user.id,
+              name: user.fullName ?? "",
+              email: user.primaryEmailAddress?.emailAddress ?? "",
+            }),
           });
 
-          if (checkResponse.status === 404) {
-            const response = await fetch("/api/addUser", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                userId: user.id,
-                name: user.fullName ?? "",
-                email: user?.emailAddresses[0]?.emailAddress,
-              }),
-            });
           if (!response.ok) {
             throw new Error("Failed to add user to database");
           }
 
-          setUserAdded(true);
-        } else {
-          setUserAdded(true);
+          setUserAdded(true); // Set the state to indicate the user has been added
+        } else if (checkResponse.ok) {
+          setUserAdded(true); // User already exists, set the state to true
         }
       } catch (error) {
-    console.error(error);
+        console.error(error);
       }
     }
   }
 
-
   useEffect(() => {
-    if (isSignedIn && user && userAdded) {
+    if (isSignedIn && user && !userAdded) {
       void addUser();
     }
   }, [isSignedIn, user, userAdded]);
@@ -62,9 +64,11 @@ export default function Header() {
         <nav>
           <ul className="flex gap-4">
             <li>
-              <Link className="text-slate-200" href="/profile">
-                Profile
-              </Link>
+              {isSignedIn && user && (
+                <Link className="text-slate-200" href={`/profile/${user.id}`}>
+                  Profile
+                </Link>
+              )}
             </li>
             <li>
               {isSignedIn && (

@@ -15,14 +15,14 @@ model User {
   userId    String @unique
   name      String
   email     String @unique
-  posts     Posts[]
-  likes     Likes[]
-  comments  Comments[]
+  posts     Post[]
+  likes     Like[]
+  comments  Comment[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Posts {
+model Post {
   id          Int      @id @default(autoincrement())
   userId      String
   user        User     @relation(fields: [userId], references: [userId])
@@ -30,25 +30,25 @@ model Posts {
   description String
   ImageUrl    String?
   likes       Int      @default(0)
-  comments    Comments[]
+  comments    Comment[]
   createdAt   DateTime @default(now())
-  likedBy     Likes[]
+  likedBy     Like[]
 }
 
-model Likes {
+model Like {
   id     Int    @id @default(autoincrement())
   postId Int
-  post   Posts  @relation(fields: [postId], references: [id])
+  post   Post   @relation(fields: [postId], references: [id])
   userId String
   user   User   @relation(fields: [userId], references: [userId])
 
   @@unique([postId, userId])
 }
 
-model Comments {
+model Comment {
   id        Int      @id @default(autoincrement())
   postId    Int
-  post      Posts    @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id])
   userId    String
   user      User     @relation(fields: [userId], references: [userId])
   text      String

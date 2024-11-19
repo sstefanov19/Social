@@ -9,13 +9,6 @@ export const config = {
   },
 };
 
-type PostsCreateInput = {
-  title: string;
-  description: string;
-  imageUrl: string | null;
-  likes: number;
-  userId: string;
-};
 
 export async function POST(req: NextRequest) {
   const { userId }: { userId: string | null } = await auth();
@@ -25,7 +18,6 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    console.log("User", userId);
 
     const formData = await req.formData();
     console.log("FormData", formData);
@@ -34,17 +26,18 @@ export async function POST(req: NextRequest) {
     const description = formData.get('description') as string;
     const imageFile = formData.get('imageUrl') as File | null;
 
+    console.log(imageFile);
+
     if (!title || !description) {
       return NextResponse.json({ message: 'Title and description are required' }, { status: 400 });
     }
 
-    // Check if userId exists in the User table
     const existingUser = await db.user.findUnique({
       where: { userId: userId },
     });
 
     if (!existingUser) {
-      throw new Error("User does not exist");
+      throw new Error("User does no pt exist");
     }
 
     let imageUrl = null;
@@ -52,7 +45,9 @@ export async function POST(req: NextRequest) {
       imageUrl = await uploadImage(imageFile);
     }
 
-    const post = await db.posts.create({
+    console.log("Image URL", imageUrl);
+
+    const post = await db.post.create({
       data: {
         title,
         description,
@@ -74,7 +69,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
   try {
-    const posts = await db.posts.findMany({
+    const posts = await db.post.findMany({
       orderBy: {
         likes: 'desc'
       },

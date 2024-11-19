@@ -23,7 +23,6 @@ export default function MontlyPosts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch posts initially
   useEffect(() => {
     const fetchPosts = async () => {
       try {
