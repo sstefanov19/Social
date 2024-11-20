@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
+import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 
 export default function Header() {
   const { isSignedIn, user } = useUser();
@@ -10,13 +10,11 @@ export default function Header() {
   async function addUser() {
     if (isSignedIn && user && !userAdded) {
       try {
-        // Check if the user already exists in the database
         const checkResponse = await fetch(`/api/users?userId=${user.id}`, {
           method: "GET",
         });
 
         if (checkResponse.status === 404) {
-          // User does not exist, add to database
           const response = await fetch("/api/addUser", {
             method: "POST",
             headers: {
@@ -34,9 +32,9 @@ export default function Header() {
             throw new Error("Failed to add user to database");
           }
 
-          setUserAdded(true); // Set the state to indicate the user has been added
+          setUserAdded(true); 
         } else if (checkResponse.ok) {
-          setUserAdded(true); // User already exists, set the state to true
+          setUserAdded(true);
         }
       } catch (error) {
         console.error(error);
@@ -51,7 +49,7 @@ export default function Header() {
   }, [isSignedIn, user, userAdded]);
 
   return (
-    <header className="fixed top-0 mt-4 w-full p-3">
+    <header className="fixed top-0 mt-4 w-full p-3 z-50">
       <div className="flex justify-between">
         <Link href="/">
           <h1 className="text-bold text-3xl text-slate-200">DevBlog</h1>
@@ -78,7 +76,7 @@ export default function Header() {
               )}
             </li>
             <li className="text-slate-200">
-              {isSignedIn ? <UserButton /> : <SignInButton />}
+              {isSignedIn ? <SignOutButton /> : <SignInButton />}
             </li>
           </ul>
         </nav>

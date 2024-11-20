@@ -8,6 +8,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: 'Invalid user ID' }, { status: 400 });
   }
 
+  console.log("User id: ", userId);
+
   try {
     const userPosts = await db.post.findMany({
       where: {
@@ -18,7 +20,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    console.log("User posts: ", userPosts);
+
 
     return NextResponse.json(userPosts);
   } catch (error) {

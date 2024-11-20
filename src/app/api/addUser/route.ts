@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 
         const body = await req.json() as User;
 
-        console.log("User body: ", body);
+       
 
 
         const {id , userId, name, email  } = body;

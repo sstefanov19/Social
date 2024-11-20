@@ -19,7 +19,12 @@ export async function GET() {
         });
 
 
-        return NextResponse.json(posts);
+        const postsWithLikeStatus = posts.map(post => ({
+            ...post,
+            likedByUser: post.likes > 0,
+        }))
+
+        return NextResponse.json(postsWithLikeStatus, { status: 200 });
 
     } catch (error) {
         console.log("Failed to fetch posts", error as Error);
