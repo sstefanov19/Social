@@ -17,7 +17,7 @@ export default function AllPost() {
     const res = await fetch('/api/posts');
     if (!res.ok) throw new Error('Failed to fetch posts');
 
-    const data: Post[] = await res.json();
+    const data: Post[] = await res.json() as Post[];
     setPosts(data);
   };
 
@@ -29,7 +29,7 @@ export default function AllPost() {
     <div className="flex h-screen mt-20 w-full justify-center">
       <main className="flex items-center flex-col w-full px-4">
         <h1 className="text-center font-bold text-2xl text-zinc-200 mb-8">Browse all posts</h1>
-        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 ">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
           {posts.map((post) => (
             <li
               className="flex flex-col w-[400px] rounded-md border-2 p-4 text-zinc-200"

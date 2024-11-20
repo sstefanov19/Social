@@ -28,13 +28,15 @@ const PostItem = React.memo(function PostItem({
       key={post.id}
     >
       {post.ImageUrl && (
+        <div className="relative">
         <Image
           src={post.ImageUrl}
           alt={post.title}
           width={500}
           height={150}
-          className="h-[150px] w-full rounded-sm"
-    />
+          className="fill h-[150px] rounded-sm"
+          />
+          </div>
       )}
       <div className="my-4 flex gap-4">
         {/*Like button */}
