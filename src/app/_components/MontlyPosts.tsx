@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { handleLike } from "~/lib/handleLike";
-
+import { useUser } from "@clerk/nextjs";
 import PostItem from "./PostItem";
 
 
@@ -15,15 +15,18 @@ interface Post {
   ImageUrl: string;
   likedByUser: boolean;
   user: {
+    id: string;
     name: string;
   };
 }
+
 
 export default function MontlyPosts() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const {user} = useUser();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -60,7 +63,7 @@ export default function MontlyPosts() {
                 <PostItem
                     key={post.id}
                     post={post}
-                    handleLike={() => handleLike(post.id , setPosts, setLikedPosts)}
+                    handleLike={() => user && handleLike(post.id, user.id , setPosts, setLikedPosts)}
                     likedPosts={likedPosts}
 
                     />
