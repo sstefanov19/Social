@@ -13,6 +13,10 @@ type Post = {
     likes: number;
     ImageUrl: string;
     likedByUser: boolean;
+    user: {
+        id: string;
+        name: string;
+    }
 }
 
 export default function AllPost() {
