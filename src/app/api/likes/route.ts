@@ -34,7 +34,6 @@ export async function PUT(req: NextRequest) {
       });
 
       if (existingLike) {
-        // Unlike post
         await tx.like.delete({
           where: {
             postId_userId: {

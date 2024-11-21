@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { handleLike } from "~/lib/handleLike";
 import { useUser } from "@clerk/nextjs";
 import PostItem from "./PostItem";
+import PostModal from "./PostsModal";
 
 
 
@@ -25,7 +26,10 @@ export default function MontlyPosts() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [isOpen , setIsOpen] = useState(false);
+  const [selectedPost , setSelectedPost] = useState<Post | null>(null);
   const [error, setError] = useState<string | null>(null);
+
   const {user} = useUser();
 
   useEffect(() => {
@@ -47,6 +51,18 @@ export default function MontlyPosts() {
 },[]);
 
 
+const handleModal = (post: Post) => {
+    setIsOpen(true);
+    setSelectedPost(post);
+
+}
+
+// const handleClose = () => {
+//     setIsOpen(false);
+//     setSelectedPost(null);
+// }
+
+
 
   if (loading) return <div className="text-center h-[1000px] text-xl font-bold text-zinc-200">Loading...</div>;
   if (error) return <div className="text-center h-[1000px] text-xl font-bold text-zinc-200" >Error: {error}</div>;
@@ -54,7 +70,7 @@ export default function MontlyPosts() {
   return (
     <section className="flex flex-col items-center justify-center">
       <h1 className="mb-6 text-2xl font-semibold text-slate-200">
-        Explore our top Monthly posts
+        Top posts of the month
       </h1>
       <div className="w-2/4 ">
         {posts.length > 0 ? (
@@ -65,6 +81,7 @@ export default function MontlyPosts() {
                     post={post}
                     handleLike={() => user && handleLike(post.id, user.id , setPosts, setLikedPosts)}
                     likedPosts={likedPosts}
+                    onPostClick={() => handleModal(post)}
 
                     />
             ))}

@@ -3,15 +3,19 @@ interface Post {
     title: string;
     description: string;
     likes: number;
-    imageUrl: string;
+    ImageUrl: string;
     likedByUser: boolean;
+    user: {
+        id: string;
+        name: string;
+    }
   }
 
   export async function handleLike(
     postId: string,
     userId: string,
     setPosts: React.Dispatch<React.SetStateAction<Post[]>>,
-    setLikedPosts: React.Dispatch<React.SetStateAction<Set<`${string}-${string}`>>>,
+    setLikedPosts: React.Dispatch<React.SetStateAction<Set<string>>>,
   ) {
     try {
       const response = await fetch("/api/likes", {
