@@ -11,13 +11,16 @@ export async function uploadImage(file: File): Promise<string> {
       { folder: 'posts' },
       (error, result) => {
         if (error) {
-          reject(error);
+          reject(new Error(error.message));
         } else {
-          resolve(result.secure_url);
+            if(result){
+                resolve(result.secure_url);
+            }
         }
       }
     );
-    const readableStream = Readable.fromWeb(file.stream());
+    const webStream = file.stream();
+    const readableStream = Readable.from(webStream as unknown as AsyncIterable<Uint8Array>);
     readableStream.pipe(uploadStream);
   });
 }
