@@ -18,7 +18,7 @@ interface Post {
   ImageUrl: string;
 }
 
-function imageLoader(config : {src : string , quality : number}) {
+function imageLoader(config : {src : string , quality? : number}) {
     console.log(config);
     const urlStart = config.src.split("upload/")[0];
     const urlEnd = config.src.split("upload/")[1];
@@ -88,7 +88,7 @@ export default function Profile() {
           <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {userPosts.map((post) => (
               <li
-                className="mb-4 flex w-[350px] flex-col rounded-md border-2 p-4 text-zinc-200 md:w-[400px]"
+                className="mb-4 flex w-[350px] flex-col rounded-md bg-[#2C3944] shadow-md p-4 text-zinc-200 md:w-[400px]"
                 key={post.id}
               >
                 {post.ImageUrl && (

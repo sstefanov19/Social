@@ -32,7 +32,7 @@ export default function Header() {
             throw new Error("Failed to add user to database");
           }
 
-          setUserAdded(true); 
+          setUserAdded(true);
         } else if (checkResponse.ok) {
           setUserAdded(true);
         }
@@ -49,7 +49,7 @@ export default function Header() {
   }, [isSignedIn, user, userAdded]);
 
   return (
-    <header className="fixed top-0 mt-4 w-full p-3 z-50">
+    <header className="fixed top-0  w-full  bg-[#1B262C] p-3 z-50">
       <div className="flex justify-between">
         <Link href="/">
           <h1 className="text-bold text-3xl text-slate-200">DevBlog</h1>

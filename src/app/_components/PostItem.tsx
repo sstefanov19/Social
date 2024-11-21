@@ -24,7 +24,7 @@ const PostItem = React.memo(function PostItem({
 }: PostItemProps) {
   return (
     <li
-      className="mb-6 flex w-[300px] flex-col rounded-md border-2 p-4 md:w-[500px]"
+      className="mb-6 flex w-[300px] flex-col rounded-md bg-[#2C3944] shadow-md p-4 md:w-[500px]"
       key={post.id}
     >
       {post.ImageUrl && (

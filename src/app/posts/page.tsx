@@ -1,29 +1,46 @@
 "use client";
 import React, { useEffect, useState } from 'react';
+import { handleLike } from '~/lib/handleLike';
 import Image from 'next/image';
+import { IoMdHeart } from 'react-icons/io';
+import { CiHeart } from 'react-icons/ci';
+import { useUser } from '@clerk/nextjs';
 
-interface Post {
-  id: string;
-  title: string;
-  description: string;
-  likes: number;
-  ImageUrl: string;
+type Post = {
+    id: string;
+    title: string;
+    description: string;
+    likes: number;
+    ImageUrl: string;
+    likedByUser: boolean;
 }
 
 export default function AllPost() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [likedPosts , setLikedPosts] = useState<Set<string>>(new Set());
+  const [error , setError] = useState<string | null>(null);
+  const [loading , setLoading] = useState(false);
 
-  const fetchPosts = async () => {
-    const res = await fetch('/api/posts');
-    if (!res.ok) throw new Error('Failed to fetch posts');
-
-    const data: Post[] = await res.json() as Post[];
-    setPosts(data);
-  };
+  const {user} = useUser();
 
   useEffect(() => {
+    const fetchPosts = async () => {
+        setLoading(true);
+        try {
+          const response = await fetch("/api/posts");
+          if (!response.ok) throw new Error("Failed to fetch posts");
+          const data = (await response.json()) as Post[];
+          setPosts(data);
+          setLikedPosts(new Set(data.filter(post => post.likedByUser).map(post => post.id)));
+        } catch (err) {
+          setError((err as Error).message);
+        } finally {
+          setLoading(false);
+        }
+    };
+
     void fetchPosts();
-  }, []);
+},[]);
 
   return (
     <div className="flex h-screen mt-20 w-full justify-center">
@@ -32,7 +49,7 @@ export default function AllPost() {
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
           {posts.map((post) => (
             <li
-              className="flex flex-col w-[400px] rounded-md border-2 p-4 text-zinc-200"
+              className="flex flex-col w-[400px] rounded-md shadow-md  bg-[#2C3944] p-4 text-zinc-200"
               key={post.id}
             >
               {post.ImageUrl && (
@@ -45,6 +62,14 @@ export default function AllPost() {
                 />
               )}
               <div className="my-4 flex gap-4">
+              <button onClick={() => user && handleLike(post.id , user.id , setPosts , setLikedPosts)}>
+          {likedPosts.has(post.id) ? (
+            <IoMdHeart size={24} color="red" />
+          ) : (
+            <CiHeart size={24} />
+          )}
+        </button>
+
                 <p>Likes: {post.likes}</p>
               </div>
               <h2 className="text-xl font-semibold">{post.title}</h2>
