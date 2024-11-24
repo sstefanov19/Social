@@ -2,7 +2,7 @@ import { NextRequest , NextResponse } from "next/server";
 import { db } from "~/server/db";
 
 
-export async function POST(req : NextRequest , res : NextResponse) {
+export async function POST(req : NextRequest) {
 
     try {
         const formData = await req.formData();
@@ -35,7 +35,7 @@ export async function POST(req : NextRequest , res : NextResponse) {
 
 
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
     try {
       const { searchParams } = new URL(req.url);
       const postId = searchParams.get('postId');
