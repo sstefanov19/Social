@@ -77,6 +77,10 @@ const formSchema = z.object({
       }
     };
 
+    if(loading) {
+        return <div className='h-[1000px] text-center'>Loading...</div>
+    }
+
     return (
             <div className='flex justify-center items-center mt-32 h-3/4 w-screen'>
               <Form {...form}>

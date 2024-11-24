@@ -71,20 +71,20 @@ export default function MontlyPosts() {
 
   if (loading)
     return (
-      <div className="h-[1000px] text-center text-xl font-bold text-zinc-200">
+      <div className="h-[1000px] mt-6 text-center text-xl font-bold text-zinc-200">
         Loading...
       </div>
     );
   if (error)
     return (
-      <div className="h-[1000px] text-center text-xl font-bold text-zinc-200">
+      <div className="h-[1000px] mt-6 text-center text-xl font-bold text-zinc-200">
         Error: {error}
       </div>
     );
 
   return (
     <section className="flex flex-col items-center justify-center">
-      <h1 className="mb-6 text-2xl font-semibold text-slate-200">
+      <h1 className="my-6 text-2xl font-semibold text-slate-200">
         Top posts of the month
       </h1>
       <div className="w-2/4">

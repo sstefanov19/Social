@@ -26,7 +26,8 @@ const SearchedPage = () => {
 
   const fetchSearchedPosts = async () => {
     try {
-      const response = await fetch(`/api/search?query=${slug}`);
+      const query = Array.isArray(slug) ? slug.join('') : slug;
+      const response = await fetch(`/api/search?query=${query}`);
       if (!response.ok) {
         throw new Error('Failed to fetch posts');
       }
