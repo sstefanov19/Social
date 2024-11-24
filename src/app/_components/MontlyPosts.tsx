@@ -62,7 +62,11 @@ export default function MontlyPosts() {
 
 
   if(isOpen) {
-    return <PostModal closeModal={handleClose} post={selectedPost} />
+    return (
+        <div className="mt-4">
+    {selectedPost && <PostModal closeModal={handleClose} post={selectedPost} />}
+        </div>
+    )
   }
 
   if (loading)

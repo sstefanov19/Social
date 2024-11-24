@@ -2,10 +2,13 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const { isSignedIn, user } = useUser();
   const [userAdded, setUserAdded] = useState(false);
+  const [searchTerm , setSearchTerm] = useState('');
+  const router = useRouter();
 
   async function addUser() {
     if (isSignedIn && user && !userAdded) {
@@ -48,6 +51,12 @@ export default function Header() {
     }
   }, [isSignedIn, user, userAdded]);
 
+  const handleKeyPress = (e : React.KeyboardEvent<HTMLInputElement>) => {
+    if(e.key === 'Enter') {
+        router.push(`/posts/${searchTerm}`)
+    }
+  }
+
   return (
     <header className="fixed top-0  w-full  bg-[#1B262C] p-3 z-50">
       <div className="flex justify-between">
@@ -57,10 +66,13 @@ export default function Header() {
         <input
           type="text"
           placeholder="Search for a topic..."
-          className="ml-2 w-[100px] rounded-md border-2 border-slate-300 p-2 md:ml-20 md:w-[300px]"
+          className="mx-2 w-[100px] rounded-md border-2 border-slate-300 p-2 md:ml-20 md:w-[300px]"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyPress={handleKeyPress}
         />
         <nav>
-          <ul className="flex gap-4">
+          <ul className="flex md:gap-4 gap-2">
             <li>
               {isSignedIn && user && (
                 <Link className="text-slate-200" href={`/profile/${user.id}`}>

@@ -6,6 +6,7 @@ import { IoMdHeart } from 'react-icons/io';
 import { CiHeart } from 'react-icons/ci';
 import { useUser } from '@clerk/nextjs';
 import PostModal from '../_components/PostsModal';
+import { BiSolidUpvote, BiUpvote } from 'react-icons/bi';
 
 type Post = {
     id: string;
@@ -93,9 +94,9 @@ if(isOpen) {
               <div className="my-4 flex gap-4">
               <button onClick={() => user && handleLike(post.id , user.id , setPosts , setLikedPosts)}>
           {likedPosts.has(post.id) ? (
-            <IoMdHeart size={24} color="red" />
+            <BiSolidUpvote size={24} color="red" />
           ) : (
-            <CiHeart size={24} />
+            <BiUpvote size={24} />
           )}
         </button>
 

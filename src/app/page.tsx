@@ -10,11 +10,10 @@ export default function HomePage() {
 
   return (
     <QueryClientProvider client={client}>
-   <div className="h-screen">
+   <div className="mt-32 min-h-screen">
     <Introduction/>
     <MontlyPosts />
     <ExplorePosts />
-   <Footer />
    </div>
     </QueryClientProvider>
   );

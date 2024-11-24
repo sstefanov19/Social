@@ -5,7 +5,7 @@ import CommentsForm from './CommentsForm'; // Adjust the import based on your ac
 import {Button} from '~/components/ui/button'; // Adjust the import based on your actual file structure
 
 interface Post {
-  id: number;
+  id: string;
   title: string;
   description: string;
   ImageUrl?: string;
@@ -53,7 +53,7 @@ export default function PostsModal({ closeModal, post }: PostsModalProps) {
 
   return (
     <div className='flex h-screen justify-center overflow-y-auto w-screen z-auto'>
-      <div className='w-[1000px] bg-slate-900 p-2'>
+      <div className='md:w-[1000px] w-[350px] bg-slate-900 p-2'>
         <div className='flex justify-between'>
           <h1 className='text-white text-4xl'>{post.title}</h1>
           <button onClick={closeModal} className='text-white'>X</button>

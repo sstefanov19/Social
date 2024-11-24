@@ -25,6 +25,9 @@ export default function RootLayout({
         {children}
         </div>
         <Toaster />
+        <div className="flex h-[400px] text-center items-center justify-center">
+        <Footer />
+        </div>
         </body>
     </html>
     </ClerkProvider>

@@ -61,7 +61,7 @@ export default function Profile() {
   }, [userId]);
 
   return (
-    <section className="mt-24 flex h-screen w-full flex-col items-center justify-center">
+    <section className="mt-24 flex min-h-screen w-full flex-col items-center justify-center">
       <div className="mt-12 flex h-[500px] w-2/4 flex-col border-2">
         <h1 className="text-center text-2xl font-bold text-zinc-200">
           Profile
