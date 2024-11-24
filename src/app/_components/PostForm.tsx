@@ -50,7 +50,7 @@ const formSchema = z.object({
       if (file) {
         formData.append('imageUrl', file);
       }
-      if (user?.id) {
+     if (user?.id) {
         formData.append('user', user.id);
       }
       const response = await fetch('/api/posts', {

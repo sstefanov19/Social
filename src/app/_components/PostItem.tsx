@@ -38,7 +38,7 @@ const PostItem = React.memo(function PostItem({
     <li
       className="mb-6 flex w-[300px] flex-col rounded-md bg-[#2C3944] shadow-md p-4 md:w-[500px]"
       key={post.id}
-      onClick={() => onPostClick(post)}
+
     >
       {post.ImageUrl && (
         <div className="relative">
@@ -47,6 +47,7 @@ const PostItem = React.memo(function PostItem({
           alt={post.title}
           width={500}
           height={150}
+          onClick={() => onPostClick(post)}
           className="fill h-[250px] rounded-sm"
           />
           </div>

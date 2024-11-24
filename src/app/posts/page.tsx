@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { IoMdHeart } from 'react-icons/io';
 import { CiHeart } from 'react-icons/ci';
 import { useUser } from '@clerk/nextjs';
+import PostModal from '../_components/PostsModal';
 
 type Post = {
     id: string;
@@ -24,6 +25,20 @@ export default function AllPost() {
   const [likedPosts , setLikedPosts] = useState<Set<string>>(new Set());
   const [error , setError] = useState<string | null>(null);
   const [loading , setLoading] = useState(false);
+  const [isOpen , setIsOpen] = useState(false);
+  const [selectedPost , setSelectedPost] = useState<Post | null>(null);
+
+  const handleModal = (post: Post) => {
+    setIsOpen(true);
+    setSelectedPost(post);
+  };
+
+  const handleClose = () => {
+      setIsOpen(false);
+      setSelectedPost(null);
+  }
+
+
 
   const {user} = useUser();
 
@@ -46,6 +61,15 @@ export default function AllPost() {
     void fetchPosts();
 },[]);
 
+
+if(isOpen) {
+    return (
+        <div className='mt-16'>
+        {selectedPost && <PostModal closeModal={handleClose} post={selectedPost}  />}
+        </div>
+    )
+  }
+
   return (
     <div className="flex h-screen mt-20 w-full justify-center">
       <main className="flex items-center flex-col w-full px-4">
@@ -58,6 +82,7 @@ export default function AllPost() {
             >
               {post.ImageUrl && (
                 <Image
+                onClick={() => handleModal(post)}
                   src={post.ImageUrl}
                   alt={post.title}
                   width={500}
