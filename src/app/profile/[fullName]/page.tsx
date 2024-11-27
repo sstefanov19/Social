@@ -1,5 +1,5 @@
 "use client";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { userButtonAppearance } from "~/lib/buttonStyle";
@@ -27,12 +27,13 @@ function imageLoader(config : {src : string , quality? : number}) {
 }
 
 export default function Profile() {
-  const { userId } = useParams();
+  const { fullName } = useParams();
+  const {user} = useUser();
   const [profile, setProfile] = useState<User | undefined>(undefined);
   const [userPosts, setUserPosts] = useState<Post[]>([]);
 
-  const fetchUserProfile = async (userId: string) => {
-    const response = await fetch(`/api/user?userId=${userId}`, {
+  const fetchUserProfile = async (fullName: string) => {
+    const response = await fetch(`/api/userByName?fullName=${fullName}`, {
       method: "GET",
     });
 
@@ -54,15 +55,17 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    if (userId) {
-      void fetchUserProfile(userId as string);
-      void fetchUserPosts(userId as string);
+    if (fullName) {
+      void fetchUserProfile(fullName as string);
+      if (user) {
+        void fetchUserPosts(user.id);
+      }
     }
-  }, [userId]);
+  }, [fullName, user]);
 
   return (
     <section className="mt-24 flex min-h-screen w-full flex-col items-center justify-center">
-      <div className="mt-12 flex h-[500px] w-2/4 flex-col border-2">
+      <div className="mt-12 flex h-[300px] w-2/4 flex-col border-2">
         <h1 className="text-center text-2xl font-bold text-zinc-200">
           Profile
         </h1>

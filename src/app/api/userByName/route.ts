@@ -3,18 +3,19 @@ import { db } from '~/server/db';
 
 export async function GET(req : NextRequest) {
 
-    const userId = req.nextUrl.searchParams.get('userId');
-    console.log("User id: " , userId);
+    const fullName = req.nextUrl.searchParams.get('fullName');
+
+    console.log(fullName);
 
 
-    if (!userId) {
+    if (!fullName) {
         return NextResponse.json({ message: 'Invalid user ID' }, { status: 400 });
       }
 
     try {
         const user = await db.user.findFirst({
             where: {
-                userId: userId,
+                name: fullName,
 
             }
         })

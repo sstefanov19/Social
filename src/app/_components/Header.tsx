@@ -75,8 +75,7 @@ export default function Header() {
           <ul className="flex md:gap-4 gap-2">
             <li>
               {isSignedIn && user && (
-                <Link className="text-slate-200" href={`/profile/${user.id}`}>
-                  Profile
+                <Link className="text-slate-200" href={`/profile/${user.fullName}`}>                  Profile
                 </Link>
               )}
             </li>
