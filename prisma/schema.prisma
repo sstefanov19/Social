@@ -3,14 +3,13 @@
 
 generator client {
     provider = "prisma-client-js"
-    previewFeatures = ["multiSchema"]
 }
 
 datasource db {
    provider = "postgresql"
   url = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING")
-  schemas = ["blogging"]
+  
 }
 
 
@@ -24,10 +23,6 @@ model User {
   comments  Comment[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@map("bloggin_users")
-
-  @@schema("blogging")
 }
 
 model Post {
@@ -41,9 +36,6 @@ model Post {
   comments    Comment[]
   createdAt   DateTime @default(now())
   likedBy     Like[]
-
-    @@map("bloggin_posts")
-    @@schema("blogging")
 }
 
 model Like {
@@ -54,10 +46,7 @@ model Like {
   user   User   @relation(fields: [userId], references: [userId])
 
   @@unique([postId, userId])
-    @@map("bloggin_likes")
-    @@schema("blogging")
 }
-
 
 model Comment {
   id        Int      @id @default(autoincrement())
@@ -68,7 +57,4 @@ model Comment {
   name     String
   text      String
   createdAt DateTime @default(now())
-
-    @@map("bloggin_comments")
-    @@schema("blogging")
 }
